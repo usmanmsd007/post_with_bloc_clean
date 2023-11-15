@@ -13,6 +13,7 @@ class PostsBloc extends Bloc<PostsEvent, PostsState> {
 
   final GetPosts getPosts;
 
+
   PostsBloc({ required this.getPosts})
       : super(PostsLoading()) {
     on<PostsEvent>((handlestate));

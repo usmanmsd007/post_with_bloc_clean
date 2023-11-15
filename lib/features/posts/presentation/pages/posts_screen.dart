@@ -1,17 +1,21 @@
 import 'dart:developer';
 
 import 'package:clean_api/core/utils/extensions/buildContextExtension.dart';
+import 'package:clean_api/core/utils/router/routes.dart';
 import 'package:clean_api/features/posts/presentation/bloc/posts_bloc.dart';
 import 'package:clean_api/features/posts/presentation/widgets/post_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class PostsScreen extends StatelessWidget {
   const PostsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    context.read<PostsBloc>().add(LoadPosts());
+    if (context.read<PostsBloc>().state is PostsLoading) {
+      context.read<PostsBloc>().add(LoadPosts());
+    }
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -34,10 +38,7 @@ class PostsScreen extends StatelessWidget {
                     PostWidget(
                       post: state.posts[i],
                       onTap: () {
-                        log("hello world", name: "On tap");
-                        // context
-                        //     .read<PostsBloc>()
-                        //     .add(LoadComments(post: state.posts[i]));
+                        context.go('/$COMMENTS', extra: state.posts[i]);
                       },
                     ),
                     SizedBox(
@@ -47,7 +48,7 @@ class PostsScreen extends StatelessWidget {
                 ),
                 itemCount: state.posts.length,
               );
-            }  else {
+            } else {
               return Container();
             }
           },

@@ -18,11 +18,11 @@ import 'package:internet_connection_checker/internet_connection_checker.dart';
 final sl = GetIt.instance;
 
 initDependencies() {
+  // DATA SOURCES
+  sl.registerLazySingleton<PostWithCommentsDataSource>(
+      () => PostWithCommentsDataSourceImpl(dio: Dio()));
   sl.registerLazySingleton<PostDataSource>(
       () => PostDataSourceImpl(dio: Dio()));
-    log("PostData Source Initielized", name: "In init");
-
-  //  sl.registerLazySingleton<PostWithCommentsDataSource>(()=> PostWithCommentsDataSourceImpl(dio: Dio()));
 
   sl.registerLazySingleton<InternetConnectionChecker>(
       () => InternetConnectionChecker());
@@ -30,20 +30,24 @@ initDependencies() {
   sl.registerLazySingleton<NetworkInfo>(
       () => NetworkInfoImpl(sl.get<InternetConnectionChecker>()));
 
+// RESPOSITORIES
   sl.registerLazySingleton<PostRepository>(() => PostRepositoryImpl(
         postDataSource: sl<PostDataSource>(),
         networkInfo: sl<NetworkInfo>(),
       ));
-// sl.registerLazySingleton<PostWithCommentRepository>(()=> PostWithCommentsRepositoryImpl(
-//       commentDataSource: sl<PostWithCommentsDataSource>(),
-//       networkInfo: sl<NetworkInfo>(),
+  sl.registerLazySingleton<PostWithCommentRepository>(() =>
+      PostWithCommentsRepositoryImpl(
+          commentDataSource: sl<PostWithCommentsDataSource>(),
+          networkInfo: sl<NetworkInfo>()));
 
-  // ));
-// sl.registerSingleton<GetComments>(GetComments(repository: sl<PostWithCommentRepository>()));
+  //USE CASES
   sl.registerSingleton<GetPosts>(GetPosts(repository: sl<PostRepository>()));
+  sl.registerSingleton<GetComments>(
+      GetComments(repository: sl<PostWithCommentRepository>()));
 
+// FACTORY OF BLOCS
   sl.registerFactory(() => PostsBloc(getPosts: sl.get<GetPosts>()));
-
+  sl.registerFactory(() => CommentsBloc(getComments: sl.get<GetComments>()));
   // sl.registerFactory(() => CommentsBloc(
   //       getComments: sl.get<GetComments>()));
 }
