@@ -33,7 +33,7 @@ class PostWithCommentsScreen extends StatelessWidget {
             BlocBuilder<CommentsBloc, CommentState>(
               builder: (context, state) {
                 if (state is CommentLoading) {
-                  return const  Center(
+                  return const Center(
                     child: CircularProgressIndicator(),
                   );
                 } else if (state is CommentsCompleted) {
@@ -61,16 +61,17 @@ class PostWithCommentsScreen extends StatelessWidget {
                                 state.comments[index].body,
                                 maxLines: 4,
                               )),
-                              const  SizedBox(
+                              const SizedBox(
                                 height: 4,
                               ),
-                             const  Divider(),
+                              const Divider(),
                             ],
                           ),
                         )
                       ],
                     ),
                   );
+                  //
                 } else if (state is CommentsError) {
                   return Center(
                     child: Text(state.message),
